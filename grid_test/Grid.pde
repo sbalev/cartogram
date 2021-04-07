@@ -17,6 +17,7 @@ class Grid {
 
   // some work variables in order to avoid creating PVectors all the time
   PVector[] quad; // used to store the corners of a cell
+  PVector tmp;
 
   Grid(float x0, float y0, int n, float cellSize) {
     this.n = n;
@@ -42,6 +43,7 @@ class Grid {
     }
 
     quad = new PVector[4];
+    tmp = new PVector();
   }
 
   // draws the cell bounaries
@@ -61,9 +63,11 @@ class Grid {
     return 0 <= i && i <= n && 0 <= j && j <= n;
   }
 
-  // Tries to fill the quad array with the corners of a cell
-  // starting from the vertex (i, j) in direction d and turning clockwise.
-  // Returns true iff it does not go out of the grid.
+  /**
+   * Tries to fill the quad array with the corners of a cell
+   * starting from the vertex (i, j) in direction d and turning clockwise.
+   * Returns true iff it does not go out of the grid.
+   */
   boolean fillQuad(int i, int j, int d) {
     for (int k = 0; k < 4; k++) {
       if (!isValidVertex(i, j)) return false;
@@ -83,5 +87,58 @@ class Grid {
         areas[i][j] = polygonArea(quad);
       }
     }
+  }
+
+
+  /**
+   * Consider the 4 (or less) cells incident to the vertex v at position (i,j)
+   * Let A_d(x,y) d=0..3 be the areas of these cells as functions of the coordinates of v
+   * Let E(x,y) = sum_d (A_d(x,y) - targetA_d)^2
+   * This method computes -gradF(v.x, v.y) and stores it in gradients[i][j]
+   * Moving v in this direction will make the squared error E smaller.
+   */
+  void computeGradient(int i, int j) {
+    gradients[i][j].set(0, 0);
+    // loop on the four possible incident cells
+    for (int d = 0; d < 4; d++) {
+      if (fillQuad(i, j, d)) {
+        // Now we have to find the upper left corner of the cell
+        // Let's use some integer trigonomagic instead of a bunch of ifs
+        int iCell = i + isin((7 * d + 1) / 2);
+        int jCell = j - isin((d + 1) / 2);
+        float dArea = areas[iCell][jCell] - targetAreas[iCell][jCell];
+        tmp.set(quad[1].y - quad[3].y, quad[3].x - quad[1].x);
+        gradients[i][j].sub(tmp.mult(dArea));
+      }
+    }
+  }
+  
+  // Computes the gradients of the vertices
+  void computeGradients() {
+    for (int i = 0; i <= n; i++) {
+      for (int j = 0; j <= n; j++) {
+        computeGradient(i, j);
+      }
+    }
+  }
+  
+  // Moves the vertices along their gradients at a given distance
+  void moveOnGradients(float distance) {
+    for (int i = 0; i <= n; i++) {
+      for (int j = 0; j <= n; j++) {
+        vertices[i][j].add(gradients[i][j].setMag(tmp, distance));
+      }
+    }
+  }
+  
+  // Computes the mean squared area error
+  float meanSqError() {
+    float error = 0;
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        error += sq(areas[i][j] - targetAreas[i][j]);
+      }
+    }
+    return error / sq(n);
   }
 }
