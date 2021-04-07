@@ -55,7 +55,7 @@ class Grid {
       }
     }
   }
-  
+
   // Moves the vertices in order to make the cell areas as close as possible to the target areas
   // Uses a simplified gradient descent method
   void distort() {
@@ -76,6 +76,26 @@ class Grid {
         step /= 2;
       }
     }
+  }
+
+  /**
+   * Maps the square [0, n*cellSize) x [0, n*cellSize) to the distorted grid.
+   * A point inside a cell can be represented as a convex combination of the cell's corners
+   * We find the coefficients of this combination in the original regular grid
+   * and use them in the distorted grid
+   * Warning: from.x and from.y must be between 0 and n*cellSize
+   * otherwise the call will throw ArrayIndexOutOfBoundsException
+   */
+  void mapToGrid(PVector from, PVector to) {
+    int j = int(from.x / cellSize);
+    float a = (from.x - j * cellSize) / cellSize;
+    int i = int(from.y / cellSize);
+    float b = (from.y - i * cellSize) / cellSize;
+    to.set(0, 0);
+    to.add(PVector.mult(vertices[i][j], a * b, tmp))
+      .add(PVector.mult(vertices[i][j + 1], (1 - a) * b, tmp))
+      .add(PVector.mult(vertices[i + 1][j + 1], (1 - a) * (1 - b), tmp))
+      .add(PVector.mult(vertices[i + 1][j], a * (1 - b), tmp));
   }
 
   /*** Some helpers ***/
@@ -134,7 +154,7 @@ class Grid {
       }
     }
   }
-  
+
   // Computes the gradients of the vertices
   void computeGradients() {
     for (int i = 0; i <= n; i++) {
@@ -143,7 +163,7 @@ class Grid {
       }
     }
   }
-  
+
   // Moves the vertices along their gradients at a given distance
   void moveOnGradients(float distance) {
     for (int i = 0; i <= n; i++) {
@@ -152,7 +172,7 @@ class Grid {
       }
     }
   }
-  
+
   // Computes the mean squared area error
   float meanSqError() {
     float error = 0;
