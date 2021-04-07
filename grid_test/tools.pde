@@ -1,11 +1,13 @@
 /*** Integer trigonometry ***/
 // https://gist.github.com/sbalev/2b656bf35eb820245afad06d5ada5a82
 
+// Returns sin(x * HALF_PI)
 int isin(int x) {
   x &= 3;
   return x == 3 ? -1 : x & 1;
 }
 
+// Returns cos(x * HALF_PI)
 int icos(int x) {
   x &= 3;
   return x == 2 ? -1 : 1 ^ x & 1;

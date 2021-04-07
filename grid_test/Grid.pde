@@ -15,6 +15,9 @@ class Grid {
   float[][] areas;
   float[][] targetAreas;
   
+  // some work variables in order to avoid creating PVectors all the time
+  PVector[] quad; // used to store the corners of a cell
+  
   Grid(float x0, float y0, int n, float cellSize) {
     this.n = n;
     this.cellSize = cellSize;
@@ -37,6 +40,8 @@ class Grid {
         targetAreas[i][j] = random(0.5, 1.5) * areas[i][j];
       }
     }
+    
+    quad = new PVector[4];
   }
   
   // draws the cell bounaries
@@ -47,5 +52,26 @@ class Grid {
         lineSegment(vertices[j][i], vertices[j + 1][i]);
       }
     }
+  }
+  
+  /*** Some helpers ***/
+  
+  // checks if (i,j) is a valid vertex index
+  boolean isValidVertex(int i, int j) {
+    return 0 <= i && i <= n && 0 <= j && j <= n;
+  }
+  
+  // Tries to fill the quad array with the corners of a cell
+  // starting from the vertex (i, j) in direction d and turning clockwise.
+  // Returns true iff it does not go out of the grid.
+  boolean fillQuad(int i, int j, int d) {
+    for (int k = 0; k < 4; k++) {
+      if (!isValidVertex(i, j)) return false;
+      quad[k] = vertices[i][j];
+      i += isin(d);
+      j += icos(d);
+      d++;
+    }
+    return true;
   }
 }
