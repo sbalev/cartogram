@@ -55,6 +55,28 @@ class Grid {
       }
     }
   }
+  
+  // Moves the vertices in order to make the cell areas as close as possible to the target areas
+  // Uses a simplified gradient descent method
+  void distort() {
+    float error = meanSqError();
+    // The inital step and the stop condition are arbitrary
+    // TODO : implement more sophisticated and faster converging gradient descent
+    float step = 0.1 * cellSize;
+    int iterations = 0;
+    while (step > 1e-5) {
+      computeGradients();
+      moveOnGradients(step);
+      computeAreas();
+      float oldError = error;
+      error = meanSqError();
+      println(++iterations, step, error);
+      // if we go too far, make the step twice smaller
+      if (error > oldError) {
+        step /= 2;
+      }
+    }
+  }
 
   /*** Some helpers ***/
 
