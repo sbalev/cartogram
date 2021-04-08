@@ -1,5 +1,6 @@
 /**
  * This class distorts a regular grid of n x n square cells so that each cell has a predefined area.
+ * It also provides some mapping methods from the regular to the distorted grid
  */
 
 class Grid {
@@ -8,12 +9,12 @@ class Grid {
   float cellSize;
 
   // arrays of size (n + 1) x (n + 1)
-  PVector[][] vertices;
-  PVector[][] gradients;
+  PVector[][] vertices; // corners of the cells
+  PVector[][] gradients; // directions in which cell areas become closer to the target areas
 
   // arrays of size n x n
-  float[][] areas;
-  float[][] targetAreas;
+  float[][] areas; // current cell areas
+  float[][] targetAreas; // target cell areas
 
   // some work variables in order to avoid creating PVectors all the time
   PVector[] quad; // used to store the corners of a cell
@@ -38,7 +39,7 @@ class Grid {
       for (int j = 0; j < n; j++) {
         areas[i][j] = cellSize * cellSize;
         // Target areas are randomly generated for the moment but they will be an input later
-        targetAreas[i][j] = random(0.2, 1.8) * areas[i][j];
+        targetAreas[i][j] = random(0.5, 1.5) * areas[i][j];
       }
     }
 
@@ -121,7 +122,7 @@ class Grid {
     int vertexCount = int(dir.mag() / step) + 1;
     dir.setMag(step);
     PVector v = buf[2].set(v1);
-    PVector vMap = new PVector();
+    PVector vMap = buf[3];
     for (int i = 0; i < vertexCount; i++) {
       mapPoint(v, vMap);
       vertex(vMap.x, vMap.y);

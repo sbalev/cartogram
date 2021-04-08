@@ -13,19 +13,19 @@ void setup() {
   stroke(255, 0, 0);
   strokeWeight(3);
   noFill();
-  
+
   beginShape();
   grid.mapLine(new PVector(50, 50), new PVector(450, 450), 5);
   endShape();
   beginShape();
   grid.mapLine(new PVector(50, 450), new PVector(450, 50), 5);
   endShape();
-  
+
   ArrayList<PVector> poly = regularPolygon(3, 750, 250, 200);
   beginShape();
   grid.mapPolyline(poly, 5, true);
   endShape(CLOSE);
-  
+
   poly = regularPolygon(4, 250, 750, 200);
   beginShape();
   grid.mapPolyline(poly, 5, true);
@@ -35,7 +35,6 @@ void setup() {
   beginShape();
   grid.mapPolyline(poly, 5, true);
   endShape(CLOSE);
-
 }
 
 ArrayList<PVector> regularPolygon(int n, float xc, float yc, float r) {
