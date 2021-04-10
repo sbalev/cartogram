@@ -1,14 +1,17 @@
-// Converts (longitude, latitude) to window coordinates
-// Adapted from another side project
-// References:
-// https://en.wikipedia.org/wiki/Web_Mercator_projection
-// https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+/**
+* Uses Mercator projection to convert (longitude, latitude) to window coordinates
+* Adapted from another side project of mine
+* I use this technique in order to be able to put OSM tiles under the polygons
+* References:
+* https://en.wikipedia.org/wiki/Web_Mercator_projection
+* https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+*/
 
-class LocationConverter {
+class LocationProjector {
   int tileX0, tileY0;
   int zoom;
   
-  LocationConverter(int winSize, PVector nw, PVector se) {
+  LocationProjector(int winSize, PVector nw, PVector se) {
     int tileCount = winSize / 256;
     zoom = 19;
     int x, y;
@@ -36,5 +39,9 @@ class LocationConverter {
   float tileY(float latitude) {
     float r = radians(latitude);
     return (1 - log(tan(r) + 1 / cos(r)) / PI) * (1 << (zoom - 1));
+  }
+  
+  String toString() {
+    return zoom + "/" + tileX0 + "/" + tileY0;
   }
 }

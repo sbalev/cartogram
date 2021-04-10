@@ -17,11 +17,11 @@ class GeoPolygon {
     }
   }
   
-  void convert(LocationConverter conv) {
+  void project(LocationProjector proj) {
     for (PVector[] ring : rings) {
       for (PVector loc : ring) {
-        loc.x = conv.winX(loc.x);
-        loc.y = conv.winY(loc.y);
+        loc.x = proj.winX(loc.x);
+        loc.y = proj.winY(loc.y);
       }
     }
   }

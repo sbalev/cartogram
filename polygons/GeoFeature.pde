@@ -13,8 +13,8 @@ class GeoFeature {
     for (GeoPolygon poly : geometry) poly.boundingBox(nw, se);
   }
   
-  void convertGeometry(LocationConverter conv) {
-    for (GeoPolygon poly : geometry) poly.convert(conv);
+  void project(LocationProjector proj) {
+    for (GeoPolygon poly : geometry) poly.project(proj);
   }
   
   void display() {
