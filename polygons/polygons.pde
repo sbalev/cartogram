@@ -19,12 +19,19 @@ void setup() {
     for (int j = 0; j < coord.size(); j++) {
       multiPoly[j] = new GeoPolygon(coord.getJSONArray(j));
     }
-    
-    // remove DOM
-    depts.remove("971");
-    depts.remove("972");
-    depts.remove("973");
-    depts.remove("974");
-    depts.remove("976");
   }
+
+  // remove DOM
+  depts.remove("971");
+  depts.remove("972");
+  depts.remove("973");
+  depts.remove("974");
+  depts.remove("976");
+
+  PVector nw = new PVector(0, 49);
+  PVector se = new PVector(0, 49);
+  for (GeoPolygon[] multiPoly : depts.values()) {
+    for (GeoPolygon poly : multiPoly) poly.boundingBox(nw, se);
+  }
+  println(nw, se);
 }
