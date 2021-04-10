@@ -34,4 +34,7 @@ void setup() {
     for (GeoPolygon poly : multiPoly) poly.boundingBox(nw, se);
   }
   println(nw, se);
+  LocationConverter conv = new LocationConverter(6*256, nw, se);
+  println(conv.winX(nw.x), conv.winY(nw.y));
+  println(conv.winX(se.x), conv.winY(se.y));
 }
