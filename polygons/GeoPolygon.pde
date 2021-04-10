@@ -16,6 +16,26 @@ class GeoPolygon {
       se.y = min(se.y, v.y);
     }
   }
+  
+  void convert(LocationConverter conv) {
+    for (PVector[] ring : rings) {
+      for (PVector loc : ring) {
+        loc.x = conv.winX(loc.x);
+        loc.y = conv.winY(loc.y);
+      }
+    }
+  }
+  
+  void display() {
+    beginShape();
+    generateVertices(rings[0]);
+    for (int i = 1; i < rings.length; i++) {
+      beginContour();
+      generateVertices(rings[i]);
+      endContour();
+    }
+    endShape(CLOSE);
+  }
 }
 
 PVector[] ring(JSONArray jRing) {
@@ -25,4 +45,8 @@ PVector[] ring(JSONArray jRing) {
     r[i] = new PVector(point.getFloat(0), point.getFloat(1));
   }
   return r;
+}
+
+void generateVertices(PVector[] ring) {
+  for (PVector p : ring) vertex(p.x, p.y);
 }
