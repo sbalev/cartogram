@@ -3,7 +3,7 @@ class GeoFeature {
   String name;
   GeoPolygon[] geometry;
   
-  GeoFeature(String id, String name, GeoPolygon[] geometry) {
+  GeoFeature(String id, String name, GeoPolygon[] geometry, color col) {
     this.id = id;
     this.name = name;
     this.geometry = geometry;
